@@ -48,17 +48,15 @@ export const Thread: FC = () => {
     >
       <div className="flex shrink-0 items-center justify-between border-b border-border/60 bg-secondary/30 px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <div className="relative">
-            <Avatar className="size-8 ring-2 ring-[#CAB2F1]/50 ring-offset-1">
-              <AvatarImage src={AVATAR_SRC} alt="Assistant" />
-              <AvatarFallback className="bg-muted"><BotIcon className="size-4 text-muted-foreground" /></AvatarFallback>
-            </Avatar>
-            <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-400 ring-1 ring-white" />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-sm font-semibold">Assistant</span>
-            <span className="text-[11px] text-muted-foreground">Online</span>
-          </div>
+          <AuiIf condition={(s) => !s.thread.isEmpty}>
+            <div className="flex items-center gap-2.5 animate-in fade-in slide-in-from-left-3 duration-500 ease-out">
+              <Avatar className="size-8 ring-2 ring-[#CAB2F1]/50 ring-offset-1">
+                <AvatarImage src={AVATAR_SRC} alt="Assistant" />
+                <AvatarFallback className="bg-muted"><BotIcon className="size-4 text-muted-foreground" /></AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-semibold animate-in fade-in slide-in-from-left-2 duration-700 ease-out delay-100 fill-mode-both">Poppy aka. AI Queen</span>
+            </div>
+          </AuiIf>
         </div>
         <AssistantModalPrimitive.Trigger asChild>
           <TooltipIconButton tooltip="Close" variant="ghost" className="size-9 rounded-lg bg-[#CAB2F1]/10 text-muted-foreground/50 hover:bg-destructive/12 hover:text-destructive/70 active:bg-destructive/20 transition-colors">
