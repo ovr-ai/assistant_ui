@@ -20,6 +20,10 @@ export function ChatWidget() {
       const thread = await client.threads.create();
       return { externalId: thread.thread_id };
     },
+    load: async (threadId) => {
+      const state = await client.threads.getState(threadId);
+      return { messages: (state.values as { messages?: unknown[] })?.messages ?? [] };
+    },
   });
   return (
     <AssistantRuntimeProvider runtime={runtime}>

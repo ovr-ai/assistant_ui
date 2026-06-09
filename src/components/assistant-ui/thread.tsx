@@ -83,6 +83,9 @@ export const Thread: FC = () => {
           <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer bg-background sticky bottom-0 mt-auto flex flex-col gap-3 overflow-visible pb-4">
             <ThreadScrollToBottom />
             <Composer />
+            <p className="text-center text-[11px] text-muted-foreground/50 px-2">
+              KI kann Fehler machen. Wichtige Infos per Mail überprüfen.
+            </p>
           </ThreadPrimitive.ViewportFooter>
         </div>
       </ThreadPrimitive.Viewport>
