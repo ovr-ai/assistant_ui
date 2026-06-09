@@ -1,5 +1,11 @@
+/* Declare layer priority order. "page" is first = lowest priority.
+   This means host-page CSS (wrapped in @layer page) can never override
+   Tailwind utilities, even though it's unlayered in the original HTML. */
+@layer page, properties, theme, base, components, utilities;
+
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "tw-shimmer";
 
 @custom-variant dark (&:is(.dark *));
 
