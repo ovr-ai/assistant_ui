@@ -61,8 +61,8 @@ export const Thread: FC = () => {
           </div>
         </div>
         <AssistantModalPrimitive.Trigger asChild>
-          <TooltipIconButton tooltip="Close" variant="ghost" className="size-8 rounded-full text-muted-foreground hover:text-foreground">
-            <XIcon className="size-4" />
+          <TooltipIconButton tooltip="Close" variant="ghost" className="size-9 rounded-lg bg-[#CAB2F1]/10 text-muted-foreground/50 hover:bg-destructive/12 hover:text-destructive/70 active:bg-destructive/20 transition-colors">
+            <XIcon className="size-5" strokeWidth={2.5} />
           </TooltipIconButton>
         </AssistantModalPrimitive.Trigger>
       </div>
