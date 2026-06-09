@@ -191,7 +191,7 @@ const ComposerAction: FC = () => (
 );
 
 const AssistantMessage: FC = () => (
-  <MessagePrimitive.Root data-slot="aui_assistant-message-root" data-role="assistant" className="fade-in slide-in-from-bottom-1 animate-in relative duration-150">
+  <MessagePrimitive.Root data-slot="aui_assistant-message-root" data-role="assistant" className="animate-in fade-in zoom-in-95 relative duration-700 ease-out fill-mode-both">
     <div className="flex items-end gap-2 px-2">
       <Avatar className="size-7 shrink-0 mb-0.5 ring-1 ring-[#CAB2F1]/40">
         <AvatarImage src={AVATAR_SRC} alt="Assistant" />
@@ -200,7 +200,7 @@ const AssistantMessage: FC = () => (
         </AvatarFallback>
       </Avatar>
       <div className="min-w-0 flex-1">
-        <div data-slot="aui_assistant-message-content" className="bg-muted text-foreground rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word shadow-sm">
+        <div data-slot="aui_assistant-message-content" className="text-foreground text-sm rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#EFEFEF" }}>
           <MessagePrimitive.GroupedParts
             groupBy={groupPartByType({
               reasoning: ["group-chainOfThought", "group-reasoning"],
@@ -273,11 +273,11 @@ const AssistantActionBar: FC = () => (
 );
 
 const UserMessage: FC = () => (
-  <MessagePrimitive.Root data-slot="aui_user-message-root" className="fade-in slide-in-from-bottom-1 animate-in duration-150 px-2" data-role="user">
+  <MessagePrimitive.Root data-slot="aui_user-message-root" className="animate-in fade-in zoom-in-95 duration-700 ease-out fill-mode-both px-2" data-role="user">
     <UserMessageAttachments />
     <div className="flex items-end justify-end">
       <div className="relative min-w-0 max-w-[85%]">
-        <div className="aui-user-message-content peer rounded-2xl rounded-br-sm px-4 py-3 text-foreground wrap-break-word empty:hidden shadow-sm" style={{ backgroundColor: "#CAB2F1" }}>
+        <div className="aui-user-message-content peer rounded-3xl rounded-br-md px-4 py-3 text-foreground text-sm wrap-break-word empty:hidden" style={{ backgroundColor: "#CAB2F1" }}>
           <MessagePrimitive.Parts />
         </div>
         <div className="aui-user-action-bar-wrapper absolute start-0 top-1/2 -translate-x-full -translate-y-1/2 pe-2 peer-empty:hidden">
