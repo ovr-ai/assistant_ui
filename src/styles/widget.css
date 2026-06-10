@@ -23,7 +23,7 @@
 .aui-root,
 [data-radix-popper-content-wrapper] {
   font-size: 16px !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
   --spacing: 4px !important;
   --text-xs: 12px !important;
   --text-sm: 14px !important;
@@ -35,7 +35,7 @@
 }
 
 .aui-root * {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
 }
 
 /* Modal open/close animation.

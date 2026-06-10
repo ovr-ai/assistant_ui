@@ -5,7 +5,6 @@ import { ToolGroupContent, ToolGroupRoot, ToolGroupTrigger } from "@/components/
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import {
   ActionBarPrimitive,
@@ -23,7 +22,6 @@ import {
 import {
   ArrowDownIcon,
   ArrowUpIcon,
-  BotIcon,
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -42,25 +40,26 @@ export const Thread: FC = () => {
       className="aui-root aui-thread-root bg-background @container flex h-full flex-col"
       style={{
         ["--thread-max-width" as string]: "44rem",
-        ["--composer-radius" as string]: "24px",
+        ["--composer-radius" as string]: "20px",
         ["--composer-padding" as string]: "10px",
       }}
     >
-      <div className="flex shrink-0 items-center justify-between border-b border-border/60 bg-secondary/30 px-4 py-3">
-        <div className="flex items-center gap-2.5">
-          <AuiIf condition={(s) => !s.thread.isEmpty}>
-            <div className="flex items-center gap-2.5 animate-in fade-in slide-in-from-left-3 duration-500 ease-out">
-              <Avatar className="size-8 ring-2 ring-[#CAB2F1]/50 ring-offset-1">
-                <AvatarImage src={AVATAR_SRC} alt="Assistant" />
-                <AvatarFallback className="bg-muted"><BotIcon className="size-4 text-muted-foreground" /></AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-semibold animate-in fade-in slide-in-from-left-2 duration-700 ease-out delay-100 fill-mode-both">Poppy aka. AI Queen</span>
+      <div className="flex shrink-0 items-center justify-between px-4 py-3" style={{ backgroundColor: "#111111" }}>
+        <div className="flex items-center gap-3">
+          <div className="size-9 flex-shrink-0 flex items-center justify-center rounded-full text-white text-sm font-bold" style={{ backgroundColor: "#E8427A" }}>
+            P
+          </div>
+          <div>
+            <div className="text-sm font-bold text-white">popeia</div>
+            <div className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>
+              <span className="inline-block size-1.5 rounded-full" style={{ backgroundColor: "#4ADE80" }} />
+              Online · antwortet sofort
             </div>
-          </AuiIf>
+          </div>
         </div>
         <AssistantModalPrimitive.Trigger asChild>
-          <TooltipIconButton tooltip="Close" variant="ghost" className="size-9 rounded-lg bg-[#CAB2F1]/10 text-muted-foreground/50 hover:bg-destructive/12 hover:text-destructive/70 active:bg-destructive/20 transition-colors">
-            <XIcon className="size-5" strokeWidth={2.5} />
+          <TooltipIconButton tooltip="Chat schließen" variant="ghost" className="size-8 rounded-full" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <XIcon className="size-4" strokeWidth={2.5} />
           </TooltipIconButton>
         </AssistantModalPrimitive.Trigger>
       </div>
@@ -115,22 +114,44 @@ const ThreadScrollToBottom: FC = () => (
 
 const ThreadWelcome: FC = () => (
   <div className="aui-thread-welcome-root my-auto flex grow flex-col">
-    <div className="aui-thread-welcome-center flex w-full grow flex-col items-center justify-center">
-      <div className="aui-thread-welcome-message flex size-full flex-col justify-center px-4">
-        <Avatar className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both mb-4 size-16 duration-200">
-          <AvatarImage src={AVATAR_SRC} alt="Assistant" />
-          <AvatarFallback className="bg-muted"><BotIcon className="size-8 text-muted-foreground" /></AvatarFallback>
-        </Avatar>
-        <h1 className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-2xl font-semibold duration-200">
-          Hello there!
-        </h1>
-        <p className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-muted-foreground text-xl delay-75 duration-200">
-          How can I help you today?
-        </p>
+    <div className="flex w-full grow flex-col items-start justify-center">
+      <div className="flex size-full flex-col justify-center px-4 gap-3">
+        <div className="flex items-end gap-2">
+          <div className="size-7 shrink-0 flex items-center justify-center rounded-full text-white text-[11px] font-bold" style={{ backgroundColor: "#E8427A" }}>
+            P
+          </div>
+          <div
+            className="text-sm leading-relaxed animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-300 max-w-[80%]"
+            style={{ backgroundColor: "#F5F5F5", borderRadius: "16px 16px 16px 2px", padding: "10px 14px", color: "#111111" }}
+          >
+            Hey! Schön, dass du da bist. Womit kann ich dir helfen? 💜
+          </div>
+        </div>
+        <QuickReplies />
       </div>
     </div>
   </div>
 );
+
+const QuickReplies: FC = () => {
+  const thread = useThreadRuntime();
+  const send = (text: string) => thread.append({ role: "user", content: [{ type: "text", text }] });
+  return (
+    <div className="flex flex-wrap gap-2 pl-9 animate-in fade-in fill-mode-both duration-300 delay-150">
+      {["Größe finden 📏", "Meine Bestellung 📦", "Nachhaltigkeit ♻️"].map((label) => (
+        <button
+          key={label}
+          type="button"
+          onClick={() => send(label)}
+          className="text-xs font-semibold px-3 py-1.5 bg-white border-2 transition-colors hover:bg-[#FDEEF4]"
+          style={{ borderColor: "#E8427A", color: "#E8427A", borderRadius: "20px" }}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const Composer: FC = () => (
   <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
@@ -141,7 +162,7 @@ const Composer: FC = () => (
       >
         <ComposerAttachments />
         <ComposerPrimitive.Input
-          placeholder="Type a message…"
+          placeholder="Deine Frage an popeia…"
           className="aui-composer-input placeholder:text-muted-foreground/60 max-h-32 min-h-10 w-full resize-none bg-transparent px-1.75 py-1 text-sm outline-none"
           rows={1}
           autoFocus
@@ -152,9 +173,6 @@ const Composer: FC = () => (
     </ComposerPrimitive.AttachmentDropzone>
   </ComposerPrimitive.Root>
 );
-
-const AVATAR_SRC = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ527SVWuVdqEdWGHKpT88Y2yqg9VXhRcwvGg&s";
-
 
 const RestartChatButton: FC = () => {
   const thread = useThreadRuntime();
@@ -196,14 +214,11 @@ const ComposerAction: FC = () => (
 const AssistantMessage: FC = () => (
   <MessagePrimitive.Root data-slot="aui_assistant-message-root" data-role="assistant" className="animate-in fade-in zoom-in-95 relative duration-700 ease-out fill-mode-both">
     <div className="flex items-end gap-2 px-2">
-      <Avatar className="size-7 shrink-0 mb-0.5 ring-1 ring-[#CAB2F1]/40">
-        <AvatarImage src={AVATAR_SRC} alt="Assistant" />
-        <AvatarFallback className="bg-muted">
-          <BotIcon className="size-3.5 text-muted-foreground" />
-        </AvatarFallback>
-      </Avatar>
+      <div className="size-7 shrink-0 mb-0.5 flex items-center justify-center rounded-full text-white text-[11px] font-bold" style={{ backgroundColor: "#E8427A" }}>
+        P
+      </div>
       <div className="min-w-0 flex-1">
-        <div data-slot="aui_assistant-message-content" className="text-foreground text-sm rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#EFEFEF" }}>
+        <div data-slot="aui_assistant-message-content" className="text-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#F5F5F5", borderRadius: "16px 16px 16px 2px", color: "#111111" }}>
           <MessagePrimitive.GroupedParts
             groupBy={groupPartByType({
               reasoning: ["group-chainOfThought", "group-reasoning"],
@@ -279,8 +294,8 @@ const UserMessage: FC = () => (
   <MessagePrimitive.Root data-slot="aui_user-message-root" className="animate-in fade-in zoom-in-95 duration-700 ease-out fill-mode-both px-2" data-role="user">
     <UserMessageAttachments />
     <div className="flex items-end justify-end">
-      <div className="relative min-w-0 max-w-[85%]">
-        <div className="aui-user-message-content peer rounded-3xl rounded-br-md px-4 py-3 text-foreground text-sm wrap-break-word empty:hidden" style={{ backgroundColor: "#CAB2F1" }}>
+      <div className="relative min-w-0 max-w-[75%]">
+        <div className="aui-user-message-content peer px-4 py-3 text-white text-sm wrap-break-word empty:hidden" style={{ backgroundColor: "#E8427A", borderRadius: "16px 16px 2px 16px" }}>
           <MessagePrimitive.Parts />
         </div>
         <div className="aui-user-action-bar-wrapper absolute start-0 top-1/2 -translate-x-full -translate-y-1/2 pe-2 peer-empty:hidden">
