@@ -1,3 +1,4 @@
+import { createContext, useContext, useRef, useState } from "react";
 import { AssistantRuntimeProvider } from "@assistant-ui/react";
 import { useLangGraphRuntime, unstable_createLangGraphStream } from "@assistant-ui/react-langgraph";
 import { Client } from "@langchain/langgraph-sdk";
@@ -5,7 +6,6 @@ import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
 
 const client = new Client({
   apiUrl: import.meta.env.VITE_DEPLOYMENT_URL,
-  apiKey: import.meta.env.VITE_API_KEY,
 });
 
 const stream = unstable_createLangGraphStream({
@@ -13,7 +13,10 @@ const stream = unstable_createLangGraphStream({
   assistantId: import.meta.env.VITE_LANGGRAPH_GRAPH_ID,
 });
 
-export function ChatWidget() {
+export const RestartContext = createContext<() => void>(() => {});
+export const useRestart = () => useContext(RestartContext);
+
+function ChatWidgetInner({ defaultOpen }: { defaultOpen: boolean }) {
   const runtime = useLangGraphRuntime({
     stream,
     create: async () => {
@@ -27,7 +30,26 @@ export function ChatWidget() {
   });
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <AssistantModal />
+      <AssistantModal defaultOpen={defaultOpen} />
     </AssistantRuntimeProvider>
+  );
+}
+
+export function ChatWidget() {
+  const [key, setKey] = useState(0);
+  const reopenRef = useRef(false);
+
+  const restart = () => {
+    reopenRef.current = true;
+    setKey((k) => k + 1);
+  };
+
+  const defaultOpen = reopenRef.current;
+  reopenRef.current = false;
+
+  return (
+    <RestartContext.Provider value={restart}>
+      <ChatWidgetInner key={key} defaultOpen={defaultOpen} />
+    </RestartContext.Provider>
   );
 }

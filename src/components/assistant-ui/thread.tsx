@@ -8,11 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import {
-  ActionBarPrimitive,
   AssistantModalPrimitive,
   AuiIf,
   BranchPickerPrimitive,
-  useThreadRuntime,
   ComposerPrimitive,
   ErrorPrimitive,
   groupPartByType,
@@ -20,16 +18,13 @@ import {
   ThreadPrimitive,
   useAuiState,
 } from "@assistant-ui/react";
+import { useRestart } from "@/ChatWidget";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
   BotIcon,
-  CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CopyIcon,
-  PencilIcon,
-  RefreshCwIcon,
   RotateCcwIcon,
   SquareIcon,
   XIcon,
@@ -46,7 +41,7 @@ export const Thread: FC = () => {
         ["--composer-padding" as string]: "10px",
       }}
     >
-      <div className="flex shrink-0 items-center justify-between border-b border-border/60 bg-secondary/30 px-4 py-3">
+      <div className="relative flex shrink-0 items-center border-b border-border/60 bg-secondary/30 px-4 py-3 min-h-[52px]">
         <div className="flex items-center gap-2.5">
           <AuiIf condition={(s) => !s.thread.isEmpty}>
             <div className="flex items-center gap-2.5 animate-in fade-in slide-in-from-left-3 duration-500 ease-out">
@@ -59,7 +54,7 @@ export const Thread: FC = () => {
           </AuiIf>
         </div>
         <AssistantModalPrimitive.Trigger asChild>
-          <TooltipIconButton tooltip="Close" variant="ghost" className="size-9 rounded-lg bg-[#CAB2F1]/10 text-muted-foreground/50 hover:bg-destructive/12 hover:text-destructive/70 active:bg-destructive/20 transition-colors">
+          <TooltipIconButton tooltip="Close" variant="ghost" className="size-9 rounded-lg bg-[#CAB2F1]/10 text-muted-foreground/50 hover:bg-destructive/12 hover:text-destructive/70 active:bg-destructive/20 transition-colors absolute" style={{ right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
             <XIcon className="size-5" strokeWidth={2.5} />
           </TooltipIconButton>
         </AssistantModalPrimitive.Trigger>
@@ -157,9 +152,9 @@ const AVATAR_SRC = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ527SV
 
 
 const RestartChatButton: FC = () => {
-  const thread = useThreadRuntime();
+  const restart = useRestart();
   return (
-    <TooltipIconButton tooltip="Restart chat" variant="ghost" className="size-8 rounded-full" onClick={() => thread.reset()}>
+    <TooltipIconButton tooltip="Restart chat" variant="ghost" className="size-8 rounded-full" onClick={restart}>
       <RotateCcwIcon className="size-4" />
     </TooltipIconButton>
   );
@@ -195,15 +190,15 @@ const ComposerAction: FC = () => (
 
 const AssistantMessage: FC = () => (
   <MessagePrimitive.Root data-slot="aui_assistant-message-root" data-role="assistant" className="animate-in fade-in zoom-in-95 relative duration-700 ease-out fill-mode-both">
-    <div className="flex items-end gap-2 px-2">
+    <div className="flex items-end gap-2">
       <Avatar className="size-7 shrink-0 mb-0.5 ring-1 ring-[#CAB2F1]/40">
         <AvatarImage src={AVATAR_SRC} alt="Assistant" />
         <AvatarFallback className="bg-muted">
           <BotIcon className="size-3.5 text-muted-foreground" />
         </AvatarFallback>
       </Avatar>
-      <div className="min-w-0 flex-1">
-        <div data-slot="aui_assistant-message-content" className="text-foreground text-sm rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#EFEFEF" }}>
+      <div className="min-w-0 max-w-[80%]">
+        <div data-slot="aui_assistant-message-content" className="text-foreground text-sm font-light rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#f4f4f5" }}>
           <MessagePrimitive.GroupedParts
             groupBy={groupPartByType({
               reasoning: ["group-chainOfThought", "group-reasoning"],
@@ -252,52 +247,26 @@ const AssistantMessage: FC = () => (
             </ErrorPrimitive.Root>
           </MessagePrimitive.Error>
         </div>
-        <div data-slot="aui_assistant-message-footer" className="ms-2 -mb-7.5 min-h-7.5 pt-1.5 flex items-center">
+        <div data-slot="aui_assistant-message-footer" className="ms-2 flex items-center">
           <BranchPicker />
-          <AssistantActionBar />
         </div>
       </div>
     </div>
   </MessagePrimitive.Root>
 );
 
-const AssistantActionBar: FC = () => (
-  <ActionBarPrimitive.Root hideWhenRunning autohide="not-last" className="aui-assistant-action-bar-root text-muted-foreground col-start-3 row-start-2 -ms-1 flex gap-1">
-    <ActionBarPrimitive.Copy asChild>
-      <TooltipIconButton tooltip="Copy">
-        <AuiIf condition={(s) => s.message.isCopied}><CheckIcon /></AuiIf>
-        <AuiIf condition={(s) => !s.message.isCopied}><CopyIcon /></AuiIf>
-      </TooltipIconButton>
-    </ActionBarPrimitive.Copy>
-    <ActionBarPrimitive.Reload asChild>
-      <TooltipIconButton tooltip="Refresh"><RefreshCwIcon /></TooltipIconButton>
-    </ActionBarPrimitive.Reload>
-  </ActionBarPrimitive.Root>
-);
 
 const UserMessage: FC = () => (
-  <MessagePrimitive.Root data-slot="aui_user-message-root" className="animate-in fade-in zoom-in-95 duration-700 ease-out fill-mode-both px-2" data-role="user">
+  <MessagePrimitive.Root data-slot="aui_user-message-root" className="animate-in fade-in zoom-in-95 duration-700 ease-out fill-mode-both" data-role="user">
     <UserMessageAttachments />
     <div className="flex items-end justify-end">
-      <div className="relative min-w-0 max-w-[85%]">
-        <div className="aui-user-message-content peer rounded-3xl rounded-br-md px-4 py-3 text-foreground text-sm wrap-break-word empty:hidden" style={{ backgroundColor: "#CAB2F1" }}>
+      <div className="min-w-0 max-w-[80%]">
+        <div className="aui-user-message-content rounded-3xl rounded-br-md px-4 py-3 text-foreground text-sm font-light wrap-break-word empty:hidden" style={{ backgroundColor: "#cab1f1" }}>
           <MessagePrimitive.Parts />
-        </div>
-        <div className="aui-user-action-bar-wrapper absolute start-0 top-1/2 -translate-x-full -translate-y-1/2 pe-2 peer-empty:hidden">
-          <UserActionBar />
         </div>
       </div>
     </div>
-    <BranchPicker data-slot="aui_user-branch-picker" className="-me-1 justify-end pe-9" />
   </MessagePrimitive.Root>
-);
-
-const UserActionBar: FC = () => (
-  <ActionBarPrimitive.Root hideWhenRunning autohide="not-last" className="aui-user-action-bar-root flex flex-col items-end">
-    <ActionBarPrimitive.Edit asChild>
-      <TooltipIconButton tooltip="Edit" className="aui-user-action-edit p-4"><PencilIcon /></TooltipIconButton>
-    </ActionBarPrimitive.Edit>
-  </ActionBarPrimitive.Root>
 );
 
 const EditComposer: FC = () => (

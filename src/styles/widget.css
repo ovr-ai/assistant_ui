@@ -10,6 +10,9 @@
   overflow: visible !important;
   z-index: 99999 !important;
   pointer-events: none !important;
+  /* Prevent Shopify parent CSS filters from distorting widget colors */
+  filter: none !important;
+  isolation: isolate !important;
 }
 
 #__chat-widget-root__ > * {
@@ -24,7 +27,11 @@
 [data-radix-popper-content-wrapper] {
   font-size: 16px !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  direction: ltr !important;
+  color-scheme: light !important;
+  /* Spacing — px so host-page html font-size (e.g. Shopify's 62.5%) can't shrink these */
   --spacing: 4px !important;
+  /* Text sizes */
   --text-xs: 12px !important;
   --text-sm: 14px !important;
   --text-base: 16px !important;
@@ -32,32 +39,85 @@
   --text-xl: 20px !important;
   --text-2xl: 24px !important;
   --text-3xl: 30px !important;
+  /* Border radius — all rem defaults replaced with px */
+  --radius: 12px !important;
+  --radius-xs: 2px !important;
+  --radius-sm: 4px !important;
+  --radius-md: 6px !important;
+  --radius-lg: 8px !important;
+  --radius-xl: 12px !important;
+  --radius-2xl: 16px !important;
+  --radius-3xl: 24px !important;
+  --radius-4xl: 32px !important;
 }
 
 .aui-root * {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
+/* Remove browser/Shopify focus outlines on form elements — the composer shell
+   provides its own focus ring via focus-within. Uses !important to beat
+   Shopify's unlayered CSS (which outranks @layer utilities). */
+.aui-root textarea,
+.aui-root textarea:focus,
+.aui-root input,
+.aui-root input:focus,
+[data-radix-popper-content-wrapper] textarea,
+[data-radix-popper-content-wrapper] textarea:focus,
+[data-radix-popper-content-wrapper] input,
+[data-radix-popper-content-wrapper] input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* Modal open/close animation.
    The content renders in a Radix portal, so Tailwind animation utilities don't reach it.
-   We use plain CSS keyed on [data-state]. */
+   aui-modal-glow runs longer and independently so the purple halo blooms in smoothly
+   and persists via fill-mode: both after the animation ends. */
 @keyframes aui-modal-in {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0px); }
 }
 @keyframes aui-modal-out {
-  from { opacity: 1; transform: scale(1); }
-  to   { opacity: 0; transform: scale(0.92); }
+  from { opacity: 1; transform: scale(1) translateY(0px); }
+  to   { opacity: 0; transform: scale(0.94) translateY(8px); }
+}
+@keyframes aui-modal-glow {
+  from { box-shadow: 0 4px 20px rgba(139,97,219,0), 0 1px 8px rgba(139,97,219,0); }
+  to   { box-shadow: 0 20px 60px -12px rgba(139,97,219,0.28), 0 4px 20px -4px rgba(139,97,219,0.12); }
 }
 
 .aui-modal-content {
   transform-origin: var(--radix-popper-transform-origin, bottom right) !important;
 }
 .aui-modal-content[data-state="open"] {
-  animation: aui-modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation:
+    aui-modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    aui-modal-glow 500ms ease-out both !important;
 }
 .aui-modal-content[data-state="closed"] {
-  animation: aui-modal-out 160ms ease-in forwards !important;
+  animation: aui-modal-out 160ms ease-in both !important;
+}
+
+/* Welcome screen animations.
+   These use Tailwind's animate-in utilities which live in @layer utilities —
+   Shopify's unlayered CSS can override animation or animation-fill-mode, leaving
+   elements stuck at opacity:0. We redefine them here with !important so they
+   always complete and stay visible. */
+@keyframes aui-welcome-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.aui-thread-welcome-message-inner {
+  animation: aui-welcome-in 200ms ease-out both !important;
+  animation-fill-mode: both !important;
+}
+
+/* Stagger delay for the subtitle paragraph (3rd child of the welcome message div) */
+.aui-thread-welcome-message .aui-thread-welcome-message-inner:nth-child(3) {
+  animation-delay: 75ms !important;
 }
 
 /* Mobile: full-screen overlay */

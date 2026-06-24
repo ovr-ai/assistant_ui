@@ -3,7 +3,9 @@
    Tailwind utilities, even though it's unlayered in the original HTML. */
 @layer page, properties, theme, base, components, utilities;
 
-@import "tailwindcss";
+/* Import theme + utilities only — skip preflight so we don't reset the host page's styles */
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
 @import "tw-animate-css";
 @import "tw-shimmer";
 
@@ -35,13 +37,120 @@
 }
 
 @layer base {
-  *, ::after, ::before {
-    border-color: var(--color-border);
+  /* Scoped preflight — mirrors Tailwind's global preflight but contained to the widget.
+     Prevents host-page element styles (margins, font sizes, list bullets, etc.) from
+     leaking in, without touching anything outside .aui-root. */
+
+  .aui-root *,
+  .aui-root ::before,
+  .aui-root ::after,
+  [data-radix-popper-content-wrapper] *,
+  [data-radix-popper-content-wrapper] ::before,
+  [data-radix-popper-content-wrapper] ::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+    border-color: var(--color-border, currentColor);
+  }
+
+  .aui-root h1,
+  .aui-root h2,
+  .aui-root h3,
+  .aui-root h4,
+  .aui-root h5,
+  .aui-root h6,
+  [data-radix-popper-content-wrapper] h1,
+  [data-radix-popper-content-wrapper] h2,
+  [data-radix-popper-content-wrapper] h3,
+  [data-radix-popper-content-wrapper] h4,
+  [data-radix-popper-content-wrapper] h5,
+  [data-radix-popper-content-wrapper] h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  .aui-root a,
+  [data-radix-popper-content-wrapper] a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .aui-root ol,
+  .aui-root ul,
+  .aui-root menu,
+  [data-radix-popper-content-wrapper] ol,
+  [data-radix-popper-content-wrapper] ul,
+  [data-radix-popper-content-wrapper] menu {
+    list-style: none;
+  }
+
+  .aui-root img,
+  .aui-root svg,
+  .aui-root video,
+  .aui-root canvas,
+  .aui-root audio,
+  .aui-root iframe,
+  [data-radix-popper-content-wrapper] img,
+  [data-radix-popper-content-wrapper] svg,
+  [data-radix-popper-content-wrapper] video,
+  [data-radix-popper-content-wrapper] canvas,
+  [data-radix-popper-content-wrapper] audio,
+  [data-radix-popper-content-wrapper] iframe {
+    display: block;
+    vertical-align: middle;
+  }
+
+  .aui-root img,
+  .aui-root video,
+  [data-radix-popper-content-wrapper] img,
+  [data-radix-popper-content-wrapper] video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .aui-root button,
+  .aui-root input,
+  .aui-root select,
+  .aui-root textarea,
+  [data-radix-popper-content-wrapper] button,
+  [data-radix-popper-content-wrapper] input,
+  [data-radix-popper-content-wrapper] select,
+  [data-radix-popper-content-wrapper] textarea {
+    font: inherit;
+    font-feature-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  .aui-root textarea,
+  [data-radix-popper-content-wrapper] textarea {
+    resize: vertical;
+  }
+
+  .aui-root button,
+  .aui-root input:where([type='button'], [type='reset'], [type='submit']),
+  [data-radix-popper-content-wrapper] button,
+  [data-radix-popper-content-wrapper] input:where([type='button'], [type='reset'], [type='submit']) {
+    appearance: button;
+  }
+
+  .aui-root ::placeholder,
+  [data-radix-popper-content-wrapper] ::placeholder {
+    opacity: 1;
+    color: color-mix(in oklab, currentcolor 50%, transparent);
   }
 }
 
-:root {
-  --radius: 0.75rem;
+/* Scope design tokens to the widget root and Radix portals instead of :root.
+   Also pin the resolved --color-* bridge vars with !important so Shopify's unlayered
+   CSS (which wins over @layer theme) cannot override them inside our widget. */
+.aui-root,
+[data-radix-popper-content-wrapper] {
+  --radius: 12px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.14 0.005 285.82);
   --card: oklch(1 0 0);
@@ -60,4 +169,24 @@
   --border: oklch(0.92 0.012 295);
   --input: oklch(0.92 0.012 295);
   --ring: oklch(0.70 0.13 295);
+
+  /* Pin the resolved bridge vars so Shopify's unlayered :root overrides can't win */
+  --color-background: oklch(1 0 0) !important;
+  --color-foreground: oklch(0.14 0.005 285.82) !important;
+  --color-card: oklch(1 0 0) !important;
+  --color-card-foreground: oklch(0.14 0.005 285.82) !important;
+  --color-popover: oklch(1 0 0) !important;
+  --color-popover-foreground: oklch(0.14 0.005 285.82) !important;
+  --color-primary: oklch(0.58 0.185 295) !important;
+  --color-primary-foreground: oklch(1 0 0) !important;
+  --color-secondary: oklch(0.97 0.018 295) !important;
+  --color-secondary-foreground: oklch(0.38 0.09 295) !important;
+  --color-muted: oklch(0.97 0.018 295) !important;
+  --color-muted-foreground: oklch(0.52 0.018 290) !important;
+  --color-accent: oklch(0.94 0.030 295) !important;
+  --color-accent-foreground: oklch(0.38 0.09 295) !important;
+  --color-destructive: oklch(0.577 0.245 27.325) !important;
+  --color-border: oklch(0.92 0.012 295) !important;
+  --color-input: oklch(0.92 0.012 295) !important;
+  --color-ring: oklch(0.70 0.13 295) !important;
 }
