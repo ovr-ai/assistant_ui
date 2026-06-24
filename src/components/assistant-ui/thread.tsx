@@ -16,9 +16,9 @@ import {
   groupPartByType,
   MessagePrimitive,
   ThreadPrimitive,
+  useAssistantRuntime,
   useAuiState,
 } from "@assistant-ui/react";
-import { useRestart } from "@/ChatWidget";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -116,8 +116,8 @@ const ThreadWelcome: FC = () => (
           <AvatarImage src={AVATAR_SRC} alt="Assistant" />
           <AvatarFallback className="bg-muted"><BotIcon className="size-8 text-muted-foreground" /></AvatarFallback>
         </Avatar>
-        <h1 className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-2xl font-semibold duration-200">
-          Hello there!
+        <h1 className="aui-thread-welcome-message-inner aui-recoleta-heading fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-2xl duration-200" style={{ color: '#fa4616' }}>
+          Hello!
         </h1>
         <p className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-muted-foreground text-xl delay-75 duration-200">
           How can I help you today?
@@ -152,9 +152,9 @@ const AVATAR_SRC = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ527SV
 
 
 const RestartChatButton: FC = () => {
-  const restart = useRestart();
+  const runtime = useAssistantRuntime();
   return (
-    <TooltipIconButton tooltip="Restart chat" variant="ghost" className="size-8 rounded-full" onClick={restart}>
+    <TooltipIconButton tooltip="Restart chat" variant="ghost" className="size-8 rounded-full" onClick={() => runtime.threads.switchToNewThread()}>
       <RotateCcwIcon className="size-4" />
     </TooltipIconButton>
   );
@@ -188,72 +188,80 @@ const ComposerAction: FC = () => (
   </div>
 );
 
-const AssistantMessage: FC = () => (
-  <MessagePrimitive.Root data-slot="aui_assistant-message-root" data-role="assistant" className="animate-in fade-in zoom-in-95 relative duration-700 ease-out fill-mode-both">
-    <div className="flex items-end gap-2">
-      <Avatar className="size-7 shrink-0 mb-0.5 ring-1 ring-[#CAB2F1]/40">
-        <AvatarImage src={AVATAR_SRC} alt="Assistant" />
-        <AvatarFallback className="bg-muted">
-          <BotIcon className="size-3.5 text-muted-foreground" />
-        </AvatarFallback>
-      </Avatar>
-      <div className="min-w-0 max-w-[80%]">
-        <div data-slot="aui_assistant-message-content" className="text-foreground text-sm font-light rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#f4f4f5" }}>
-          <MessagePrimitive.GroupedParts
-            groupBy={groupPartByType({
-              reasoning: ["group-chainOfThought", "group-reasoning"],
-              "tool-call": ["group-chainOfThought", "group-tool"],
-              "standalone-tool-call": [],
-            })}
-          >
-            {({ part, children }) => {
-              switch (part.type) {
-                case "group-chainOfThought":
-                  return <div data-slot="aui_chain-of-thought">{children}</div>;
-                case "group-reasoning": {
-                  const running = part.status.type === "running";
-                  return (
-                    <ReasoningRoot defaultOpen={running}>
-                      <ReasoningTrigger active={running} />
-                      <ReasoningContent aria-busy={running}>
-                        <ReasoningText>{children}</ReasoningText>
-                      </ReasoningContent>
-                    </ReasoningRoot>
-                  );
-                }
-                case "group-tool":
-                  return (
-                    <ToolGroupRoot>
-                      <ToolGroupTrigger count={part.indices.length} active={part.status.type === "running"} />
-                      <ToolGroupContent>{children}</ToolGroupContent>
-                    </ToolGroupRoot>
-                  );
-                case "text":
-                  return <MarkdownText />;
-                case "reasoning":
-                  return <Reasoning {...part} />;
-                case "tool-call":
-                  return part.toolUI ?? <ToolFallback {...part} />;
-                case "indicator":
-                  return <span data-slot="aui_assistant-message-indicator" className="animate-pulse font-sans" aria-label="Assistant is working">{"●"}</span>;
-                default:
-                  return null;
-              }
-            }}
-          </MessagePrimitive.GroupedParts>
-          <MessagePrimitive.Error>
-            <ErrorPrimitive.Root className="aui-message-error-root border-destructive bg-destructive/10 text-destructive mt-2 rounded-md border p-3 text-sm">
-              <ErrorPrimitive.Message className="line-clamp-2" />
-            </ErrorPrimitive.Root>
-          </MessagePrimitive.Error>
-        </div>
-        <div data-slot="aui_assistant-message-footer" className="ms-2 flex items-center">
-          <BranchPicker />
+const AssistantMessage: FC = () => {
+  const showTyping = useAuiState((s) => {
+    if (s.message.status.type !== "running") return false;
+    return !(s.message.content as Array<{ type: string; text?: string }>).some(
+      (p) => p.type === "text" && (p.text?.length ?? 0) > 0
+    );
+  });
+
+  return (
+    <MessagePrimitive.Root data-slot="aui_assistant-message-root" data-role="assistant" className="animate-in fade-in zoom-in-95 relative duration-700 ease-out fill-mode-both">
+      <div className="flex items-end gap-2">
+        <Avatar className="size-7 shrink-0 mb-0.5 ring-1 ring-[#CAB2F1]/40">
+          <AvatarImage src={AVATAR_SRC} alt="Assistant" />
+          <AvatarFallback className="bg-muted">
+            <BotIcon className="size-3.5 text-muted-foreground" />
+          </AvatarFallback>
+        </Avatar>
+        <div className="min-w-0 max-w-[80%]">
+          <div data-slot="aui_assistant-message-content" className="text-foreground text-sm font-light rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#f4f4f5" }}>
+            {showTyping ? (
+              <span className="aui-typing-indicator" aria-label="Assistant is thinking">
+                <span /><span /><span />
+              </span>
+            ) : (
+              <MessagePrimitive.GroupedParts
+                groupBy={groupPartByType({
+                  reasoning: ["group-chainOfThought", "group-reasoning"],
+                  "tool-call": ["group-chainOfThought", "group-tool"],
+                  "standalone-tool-call": [],
+                })}
+              >
+                {({ part, children }) => {
+                  switch (part.type) {
+                    case "group-chainOfThought":
+                      return <div data-slot="aui_chain-of-thought">{children}</div>;
+                    case "group-reasoning": {
+                      const running = part.status.type === "running";
+                      return (
+                        <ReasoningRoot defaultOpen={running}>
+                          <ReasoningTrigger active={running} />
+                          <ReasoningContent aria-busy={running}>
+                            <ReasoningText>{children}</ReasoningText>
+                          </ReasoningContent>
+                        </ReasoningRoot>
+                      );
+                    }
+                    case "group-tool":
+                      return null;
+                    case "text":
+                      return <MarkdownText />;
+                    case "reasoning":
+                      return <Reasoning {...part} />;
+                    case "tool-call":
+                      return null;
+                    default:
+                      return null;
+                  }
+                }}
+              </MessagePrimitive.GroupedParts>
+            )}
+            <MessagePrimitive.Error>
+              <ErrorPrimitive.Root className="aui-message-error-root border-destructive bg-destructive/10 text-destructive mt-2 rounded-md border p-3 text-sm">
+                <ErrorPrimitive.Message className="line-clamp-2" />
+              </ErrorPrimitive.Root>
+            </MessagePrimitive.Error>
+          </div>
+          <div data-slot="aui_assistant-message-footer" className="ms-2 flex items-center">
+            <BranchPicker />
+          </div>
         </div>
       </div>
-    </div>
-  </MessagePrimitive.Root>
-);
+    </MessagePrimitive.Root>
+  );
+};
 
 
 const UserMessage: FC = () => (

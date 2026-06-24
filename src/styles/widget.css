@@ -55,6 +55,12 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
+/* Recoleta heading — higher specificity than the wildcard reset above */
+.aui-root .aui-recoleta-heading {
+  font-family: 'Recoleta', serif !important;
+  font-weight: 700 !important;
+}
+
 /* Remove browser/Shopify focus outlines on form elements — the composer shell
    provides its own focus ring via focus-within. Uses !important to beat
    Shopify's unlayered CSS (which outranks @layer utilities). */
@@ -119,6 +125,28 @@
 .aui-thread-welcome-message .aui-thread-welcome-message-inner:nth-child(3) {
   animation-delay: 75ms !important;
 }
+
+/* Typing indicator — three bouncing dots shown while waiting for first tokens */
+@keyframes aui-typing-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+.aui-typing-indicator {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 2px 0 !important;
+}
+.aui-typing-indicator span {
+  display: inline-block !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background-color: oklch(0.52 0.018 290) !important;
+  animation: aui-typing-dot 1.2s ease-in-out infinite !important;
+}
+.aui-typing-indicator span:nth-child(2) { animation-delay: 0.2s !important; }
+.aui-typing-indicator span:nth-child(3) { animation-delay: 0.4s !important; }
 
 /* Mobile: full-screen overlay */
 @media (max-width: 639px) {

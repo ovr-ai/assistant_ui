@@ -4,9 +4,9 @@ import { AssistantModalPrimitive } from "@assistant-ui/react";
 import { Thread } from "@/components/assistant-ui/thread";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 
-export const AssistantModal: FC<{ defaultOpen?: boolean }> = ({ defaultOpen }) => {
+export const AssistantModal: FC = () => {
   return (
-    <AssistantModalPrimitive.Root defaultOpen={defaultOpen}>
+    <AssistantModalPrimitive.Root>
       <AssistantModalPrimitive.Anchor className="aui-root aui-modal-anchor fixed end-4 bottom-4 size-11">
         <AssistantModalPrimitive.Trigger asChild>
           <AssistantModalButton />
