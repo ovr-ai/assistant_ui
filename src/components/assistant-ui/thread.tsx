@@ -206,7 +206,7 @@ const AssistantMessage: FC = () => {
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0 max-w-[80%]">
-          <div data-slot="aui_assistant-message-content" className="text-foreground text-sm font-light rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#f4f4f5" }}>
+          <div data-slot="aui_assistant-message-content" className="text-foreground text-sm font-light rounded-2xl rounded-bl-sm px-4 py-3 leading-relaxed wrap-break-word" style={{ backgroundColor: "#f5f5f5" }}>
             {showTyping ? (
               <span className="aui-typing-indicator" aria-label="Assistant is thinking">
                 <span /><span /><span />
@@ -269,7 +269,7 @@ const UserMessage: FC = () => (
     <UserMessageAttachments />
     <div className="flex items-end justify-end">
       <div className="min-w-0 max-w-[80%]">
-        <div className="aui-user-message-content rounded-3xl rounded-br-md px-4 py-3 text-foreground text-sm font-light wrap-break-word empty:hidden" style={{ backgroundColor: "#cab1f1" }}>
+        <div className="aui-user-message-content rounded-3xl rounded-br-md px-4 py-3 text-foreground text-sm font-light wrap-break-word empty:hidden" style={{ backgroundColor: "#cab2f1" }}>
           <MessagePrimitive.Parts />
         </div>
       </div>

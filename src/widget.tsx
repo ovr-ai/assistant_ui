@@ -11,24 +11,25 @@ const COLORS_STYLE_ID = "__ovr-widget-colors__";
 const COLOR_VARS_CSS = `
 .aui-root,
 [data-radix-popper-content-wrapper] {
+  /* Popeia brand palette — sourced from popeia.de :root CSS vars */
   --color-background: oklch(1 0 0) !important;
-  --color-foreground: oklch(0.14 0.005 285.82) !important;
+  --color-foreground: oklch(0.38 0.02 255) !important;
   --color-card: oklch(1 0 0) !important;
-  --color-card-foreground: oklch(0.14 0.005 285.82) !important;
+  --color-card-foreground: oklch(0.38 0.02 255) !important;
   --color-popover: oklch(1 0 0) !important;
-  --color-popover-foreground: oklch(0.14 0.005 285.82) !important;
-  --color-primary: oklch(0.58 0.185 295) !important;
+  --color-popover-foreground: oklch(0.38 0.02 255) !important;
+  --color-primary: oklch(0.79 0.095 295) !important;
   --color-primary-foreground: oklch(1 0 0) !important;
-  --color-secondary: oklch(0.97 0.018 295) !important;
-  --color-secondary-foreground: oklch(0.38 0.09 295) !important;
-  --color-muted: oklch(0.97 0.018 295) !important;
-  --color-muted-foreground: oklch(0.52 0.018 290) !important;
-  --color-accent: oklch(0.94 0.030 295) !important;
-  --color-accent-foreground: oklch(0.38 0.09 295) !important;
-  --color-destructive: oklch(0.577 0.245 27.325) !important;
-  --color-border: oklch(0.92 0.012 295) !important;
-  --color-input: oklch(0.92 0.012 295) !important;
-  --color-ring: oklch(0.70 0.13 295) !important;
+  --color-secondary: oklch(0.97 0 0) !important;
+  --color-secondary-foreground: oklch(0.50 0.05 295) !important;
+  --color-muted: oklch(0.97 0 0) !important;
+  --color-muted-foreground: oklch(0.56 0.015 255) !important;
+  --color-accent: oklch(0.95 0.018 295) !important;
+  --color-accent-foreground: oklch(0.50 0.05 295) !important;
+  --color-destructive: oklch(0.60 0.22 29) !important;
+  --color-border: oklch(0.92 0.004 255) !important;
+  --color-input: oklch(0.92 0.004 255) !important;
+  --color-ring: oklch(0.79 0.095 295) !important;
 }
 `;
 
