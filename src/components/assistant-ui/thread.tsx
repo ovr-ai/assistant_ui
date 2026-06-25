@@ -116,8 +116,8 @@ const ThreadWelcome: FC = () => (
           <AvatarImage src={AVATAR_SRC} alt="Assistant" />
           <AvatarFallback className="bg-muted"><BotIcon className="size-8 text-muted-foreground" /></AvatarFallback>
         </Avatar>
-        <h1 className="aui-thread-welcome-message-inner aui-recoleta-heading fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-2xl duration-200" style={{ color: '#fa4616' }}>
-          Hello!
+        <h1 className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-2xl font-semibold duration-200">
+          Hello there!
         </h1>
         <p className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in fill-mode-both text-muted-foreground text-xl delay-75 duration-200">
           How can I help you today?

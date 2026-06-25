@@ -47,20 +47,6 @@ function pinColorVars() {
 
 pinColorVars();
 
-// Load Recoleta Bold via @font-face served from our own server
-if (!document.getElementById("__ovr-recoleta-font__")) {
-  const style = document.createElement("style");
-  style.id = "__ovr-recoleta-font__";
-  style.textContent = `@font-face {
-    font-family: 'Recoleta';
-    font-style: normal;
-    font-weight: 700;
-    src: url('https://api.ovrai.co/frontend/recoleta-bold.woff') format('woff');
-    font-display: swap;
-  }`;
-  document.head.appendChild(style);
-}
-
 // Re-pin whenever Shopify (or anything else) appends a new stylesheet to <head>.
 const observer = new MutationObserver((mutations) => {
   for (const mutation of mutations) {
